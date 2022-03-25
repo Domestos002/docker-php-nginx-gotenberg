@@ -1,0 +1,33 @@
+version: '3.2'
+
+networks:
+  default:
+    driver: bridge
+
+services:
+  nginx:
+    build:
+      context: ./docker/nginx
+      dockerfile: Dockerfile
+    ports:
+      - "9000:80"
+    volumes:
+      - ./www:/var/www:rw
+      - ./log:/var/log/nginx
+    networks:
+      - default
+
+  php-fpm:
+    build:
+      context: ./docker/php-fpm
+      dockerfile: Dockerfile
+    volumes:
+      - ./www:/var/www:rw
+    networks:
+      - default
+
+  gotenberg:
+    image: gotenberg/gotenberg:7
+    restart: always
+    networks:
+      - default
